@@ -39,6 +39,10 @@ repos:
   - {id: rst-linter, language_version: python3.7}
   repo: git://github.com/Lucas-C/pre-commit-hooks-markup
   rev: v1.0.0
+- hooks:
+  - id: scss-lint
+  repo: https://github.com/pre-commit/mirrors-scss-lint
+  rev: 'v0.59.0'
 # - hooks:
 #   - additional_dependencies: [pylint_odoo==3.0.1]
 #     entry: pylint
