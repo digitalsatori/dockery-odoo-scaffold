@@ -34,6 +34,10 @@ repos:
     stages: [commit-msg]
   repo: https://github.com/alessandrojcm/commitlint-pre-commit-hook
   rev: 2.0.0
+- hooks:
+  - {id: rst-linter, language_version: python3.7}
+  repo: git://github.com/Lucas-C/pre-commit-hooks-markup
+  rev: v1.0.0
 # - hooks:
 #   - additional_dependencies: [pylint_odoo==3.0.1]
 #     entry: pylint
