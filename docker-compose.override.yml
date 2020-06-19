@@ -60,37 +60,3 @@ services:
   wdb:
     image: kozea/wdb:3.3.0
     ports: ['1984:1984']
-
-# ========================
-# dev auxiliaries ...
-# ========================
-
-  dodoo:
-    << : *odoo-dev-common
-    depends_on: ['db', 'wdb']
-    entrypoint: ['/entrypoint.sh', 'dodoo']
-    command: []
-
-# ------------------------
-
-  init:
-    << : *odoo-dev-common
-    command: ['-nDockeryOdoo', '-mmail']
-    entrypoint: [/entrypoint.sh, dodoo, init]
-    depends_on: ['db']
-
-# ------------------------
-
-  rmdb:
-    << : *odoo-dev-common
-    command: ['DockeryOdoo']
-    entrypoint: [dropdb, -hdb, -Uodoo]
-    depends_on: ['db']
-
-# ------------------------
-
-  tests:
-    << : *odoo-dev-common
-    depends_on: ['db', 'wdb']
-    entrypoint: ['/entrypoint.sh', '--dev', 'wdb,qweb,werkzeug,xml', '--test-enable', '--without-demo=False', '--stop-after-init', '--logfile', '/var/log/dodoo/tests/']
-    command: []

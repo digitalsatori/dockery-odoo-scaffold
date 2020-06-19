@@ -4,6 +4,9 @@ _testlogs/
 # Code refactoring snippets (eg. pybowler)
 refactoring.d/
 
+# local database backups
+.backups
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
