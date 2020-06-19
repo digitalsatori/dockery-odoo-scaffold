@@ -2,22 +2,95 @@ version: '3.4'
 
 
 # x-* key is ignored by docker-compose
-x-odoo:
-  &add-additional-volumes
+x-odoo-dev-common:
+  &odoo-dev-common
+  image: "${REPO}:${DEVOPSIMAGE}"
+  tty: true
   volumes:
-  # Put additional volumes here
-  - ./.gitignore:/.gitignore:ro
+
+  # Named Data Volumes
+  - data:/var/lib/odoo-persist
+  - tests:/var/log/dodoo/tests
+  - loader:/var/lib/dodoo/loader
+
+  # Host Path Volumes (Overlays - for debugging and interactive dev)
+  -       ./src:${ODOO_SRC}:ro
+  -     ./vendor:${ODOO_VENDOR}:ro
+  -     ./_mig.d:${MIG_DIR}:ro
+  -   ./_patch.d:${PATCH_DIR}:ro
+  -  ./odoo.conf:${ODOO_RC}:ro
+  - ./pytest.ini:${ODOO_BASEPATH}/pytest.ini:ro
+  -       ./odoo:${ODOO_FRM}
+
   # Example of loading a local python library during development
   # - ~/dev/github.com/xoe-labs/python-xmlsig/src/xmlsig/:/usr/local/lib/python3.7/site-packages/xmlsig/
 
+volumes:
+  tests: {driver: local}
+  loader: {driver: local}
+
 services:
+
+  db:
+    # Do expose during development
+    ports: ['5433:5432']
+    networks: {public: null}
+
   odoo:
-    << : *add-additional-volumes
-  odoo-redis:
-    << : *add-additional-volumes
+    << : *odoo-dev-common
+    command: ['--dev', 'wdb,reload,qweb,werkzeug,xml']
+    depends_on: ['db', 'wdb', 'proxy']
+
+  odoo-longpolling:
+    << : *odoo-dev-common
+    command: ['--dev', 'wdb,reload,qweb,werkzeug,xml']
+    depends_on: ['db', 'wdb', 'proxy']
+
+  # http://filebrowser.localhost
+  filebrowser:
+    command: [--noauth]
+    image: filebrowser/filebrowser
+    volumes: ['data:/srv/data', 'tests:/srv/tests',
+      'loader:/srv/loader']
+
+  # http://mail.localhost
+  smtpfake: {image: mailhog/mailhog}
+
+  # http://wdb.localhost
+  wdb:
+    image: kozea/wdb:3.3.0
+    ports: ['1984:1984']
+
+# ========================
+# dev auxiliaries ...
+# ========================
+
   dodoo:
-    << : *add-additional-volumes
-  scaffold:
-    << : *add-additional-volumes
+    << : *odoo-dev-common
+    depends_on: ['db', 'wdb']
+    entrypoint: ['/entrypoint.sh', 'dodoo']
+    command: []
+
+# ------------------------
+
+  init:
+    << : *odoo-dev-common
+    command: ['-nDockeryOdoo', '-mmail']
+    entrypoint: [/entrypoint.sh, dodoo, init]
+    depends_on: ['db']
+
+# ------------------------
+
+  rmdb:
+    << : *odoo-dev-common
+    command: ['DockeryOdoo']
+    entrypoint: [dropdb, -hdb, -Uodoo]
+    depends_on: ['db']
+
+# ------------------------
+
   tests:
-    << : *add-additional-volumes
+    << : *odoo-dev-common
+    depends_on: ['db', 'wdb']
+    entrypoint: ['/entrypoint.sh', '--dev', 'wdb,qweb,werkzeug,xml', '--test-enable', '--without-demo=False', '--stop-after-init', '--logfile', '/var/log/dodoo/tests/']
+    command: []
