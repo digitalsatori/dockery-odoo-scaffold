@@ -141,7 +141,6 @@ decrypt file:
 
 # Install tooling (bobtemplates, )
 get_tools:
-# Install Bobtemplates.odoo
     pip install bobtemplates.odoo
 
 # ======================================
