@@ -134,3 +134,28 @@ encrypt file:
 # decrypt backup
 decrypt file:
     openssl enc -aes-256-cbc -pbkdf2 -d -in {{ file }} | tar xz -C {{ backupfolder }}
+
+# ======================================
+# Bobtemplates odoo
+# ======================================
+# ref https://github.com/acsone/bobtemplates.odoo
+
+# Install Bobtemplates.odoo
+get mrbob:
+    pip install bobtemplates.odoo
+
+# New addon using bobtemplates.odoo
+new_addon:
+    cd {{invocation_directory()}}; mrbob bobtemplates.odoo:addon
+
+# New model using bobtemplates.odoo
+new_model:
+    cd {{invocation_directory()}}; mrbob bobtemplates.odoo:model
+
+# New test using bobtemplates.odoo
+new_test:
+    cd {{invocation_directory()}}; mrbob bobtemplates.odoo:test
+
+# New wizard using bobtemplates.odoo
+new_wizard:
+    cd {{invocation_directory()}}; mrbob bobtemplates.odoo:wizard
