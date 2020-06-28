@@ -4,7 +4,7 @@ version: '3.4'
 # x-* key is ignored by docker-compose
 x-odoo-dev-common:
   &odoo-dev-common
-  image: "${REPO}:${DEVOPSIMAGE}"
+  image: "${DEVOPSIMAGE}"
   tty: true
   volumes:
 
@@ -14,13 +14,13 @@ x-odoo-dev-common:
   - loader:/var/lib/dodoo/loader
 
   # Host Path Volumes (Overlays - for debugging and interactive dev)
-  -       ./src:${ODOO_SRC}:ro
-  -     ./vendor:${ODOO_VENDOR}:ro
-  -     ./_mig.d:${MIG_DIR}:ro
-  -   ./_patch.d:${PATCH_DIR}:ro
-  -  ./odoo.conf:${ODOO_RC}:ro
+  - ./src:${ODOO_SRC}:ro
+  - ./vendor:${ODOO_VENDOR}:ro
+  - ./_mig.d:${MIG_DIR}:ro
+  - ./_patch.d:${PATCH_DIR}:ro
+  - ./odoo.conf:${ODOO_RC}:ro
   - ./pytest.ini:${ODOO_BASEPATH}/pytest.ini:ro
-  -       ./odoo:${ODOO_FRM}
+  - ./odoo:${ODOO_FRM}
 
   # Example of loading a local python library during development
   # - ~/dev/github.com/xoe-labs/python-xmlsig/src/xmlsig/:/usr/local/lib/python3.7/site-packages/xmlsig/

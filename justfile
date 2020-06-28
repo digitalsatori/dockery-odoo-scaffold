@@ -23,11 +23,11 @@ pull:
 # build local images
 build:
     docker build \
-        --tag ${PRODIMAGE} \
+        --tag ${IMAGE_PREFIX}:${ODOO_VERSION} \
         --build-arg "FROM_IMAGE=${FROMPRODIMAGE}" \
         .
     docker build \
-        --tag ${DEVOPSIMAGE} \
+        --tag ${IMAGE_PREFIX}:${ODOO_VERSION}-devops \
         --build-arg "FROM_IMAGE=${FROMDEVOPSIMAGE}" \
         .
 
@@ -41,7 +41,7 @@ patch:
         --user $(id -u):$(id -g) \
         --volume './vendor:/mnt/vendor' \
         --volume './patches.d:/mnt/patches.d' \
-        ${REPO}:${DEVOPSIMAGE} \
+        ${DEVOPSIMAGE} \
         /usr/local/bin/apply-patches.sh \
         "/mnt/patches.d/" "/mnt/"
 
@@ -79,7 +79,7 @@ migrate modules from:
         --volume "./src:/mnt/src" \
         --user $(id -u):$(id -g) \
         --entrypoint "" \
-        ${REPO}:${DEVOPSIMAGE} odoo-module-migrator \
+        ${DEVOPSIMAGE} odoo-module-migrator \
         --directory "/mnt/src" \
         --no-commit \
         --force-black \
@@ -146,7 +146,7 @@ get_tools:
 # ======================================
 # Bobtemplates odoo
 # ======================================
-# ref https://github.com/acsone/bobtemplates.odoo
+    # ref https://github.com/acsone/bobtemplates.odoo
 
 # New addon using bobtemplates.odoo
 new_addon:
