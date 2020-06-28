@@ -37,7 +37,7 @@ services:
 
   # http://odoo.localhost/longpolling/
   odoo-longpolling:
-    image: "${REPO}:${PRODIMAGE}"
+    image: "${PRODIMAGE}"
     volumes:
     - data:/var/lib/odoo-persist
     entrypoint: ['/entrypoint.sh', 'gevent']
@@ -45,7 +45,7 @@ services:
 
   # http://odoo.localhost
   odoo:
-    image: "${REPO}:${PRODIMAGE}"
+    image: "${PRODIMAGE}"
     volumes:
     - data:/var/lib/odoo-persist
     command: ['/entrypoint.sh', 'run']
