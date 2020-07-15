@@ -146,7 +146,7 @@ get_tools:
 # ======================================
 # Bobtemplates odoo
 # ======================================
-    # ref https://github.com/acsone/bobtemplates.odoo
+# ref https://github.com/acsone/bobtemplates.odoo
 
 # New addon using bobtemplates.odoo
 new_addon:
